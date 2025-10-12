@@ -46,7 +46,7 @@ public class GreetingController {
 	public ResponseEntity<String> greetPost(
 			@RequestBody GreetingDTO dto){
 		String greetingReturn = config.getGreeting();
-		String nameReturn = dto.name(); 
+	    String nameReturn = dto.getName();
 		String textReturn = String.format("%s, %s!!!", greetingReturn, nameReturn);
 		
 		return ResponseEntity.ok(textReturn);

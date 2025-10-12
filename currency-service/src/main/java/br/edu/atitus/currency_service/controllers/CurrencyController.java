@@ -37,10 +37,7 @@ public class CurrencyController {
 			@PathVariable String source,
 			@PathVariable String target) throws Exception{
 		
-//		CurrencyEntity currency = repository.
-//				findBySourceAndTarget(source, target)
-//				.orElseThrow(() -> new Exception("Currency not found"));
-		
+
 		source = source.toUpperCase();
 		target = target.toUpperCase();
 		String dataSource = "None";
@@ -52,6 +49,7 @@ public class CurrencyController {
 		if (currency != null) {
 			dataSource = "Cache";
 		} else {
+			
 			currency = new CurrencyEntity();
 			currency.setSource(source);
 			currency.setTarget(target);
