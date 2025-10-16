@@ -18,7 +18,7 @@ public class CurrencyEntity {
 	private String source;
 	@Column(name = "target_currency")
 	private String target;
-	@Column(name = "conversionRate")
+	@Column(name = "conversion_rate")
 	private double conversionRate;
 	
 	@Transient
@@ -28,18 +28,6 @@ public class CurrencyEntity {
 	
 	
 	
-	public double getConvertedValue() {
-		return convertedValue;
-	}
-	public void setConvertedValue(double convertedValue) {
-		this.convertedValue = convertedValue;
-	}
-	public String getEnviroment() {
-		return enviroment;
-	}
-	public void setEnviroment(String enviroment) {
-		this.enviroment = enviroment;
-	}
 	public Long getId() {
 		return id;
 	}
@@ -64,5 +52,18 @@ public class CurrencyEntity {
 	public void setConversionRate(double conversionRate) {
 		this.conversionRate = conversionRate;
 	}
+	public double getConvertedValue() {
+		return convertedValue;
+	}
+	public void setConvertedValue(double convertedValue) {
+		this.convertedValue = convertedValue;
+	}
+	public String getEnviroment() {
+		return enviroment;
+	}
+	public void setEnviroment(String enviroment) {
+		this.enviroment = enviroment;
+	}
+
 	
 }

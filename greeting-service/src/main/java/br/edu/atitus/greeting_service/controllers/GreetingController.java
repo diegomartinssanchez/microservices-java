@@ -16,18 +16,12 @@ import br.edu.atitus.greeting_service.dtos.GreetingDTO;
 @RequestMapping("greeting")
 public class GreetingController {
 	
-	//@Value("${greeting-service.greeting}")
-	//private String greeting;
-	//@Value("${greeting-service.default-name}")
-	//private String defaultName;
-	
 	private final GreetingConfig config;
 	
 	public GreetingController(GreetingConfig config) {
 		super();
 		this.config = config;
 	}
-	
 	
 	@GetMapping({"", "/{namePath}"})
 	public ResponseEntity<String> greet(
@@ -46,29 +40,10 @@ public class GreetingController {
 	public ResponseEntity<String> greetPost(
 			@RequestBody GreetingDTO dto){
 		String greetingReturn = config.getGreeting();
-	    String nameReturn = dto.getName();
+		String nameReturn = dto.name(); 
 		String textReturn = String.format("%s, %s!!!", greetingReturn, nameReturn);
 		
 		return ResponseEntity.ok(textReturn);
 	}
 
-	
-//	@GetMapping("/{namePath}")
-//	public ResponseEntity<String> greetPaht(
-//			@PathVariable String namePath){
-//		return greet(namePath);
-//	}
-//
-//	@GetMapping
-//	public ResponseEntity<String> greet(
-//			@RequestParam(required = false) String name){
-//		String greetingReturn = config.getGreeting();
-//		String nameReturn = name != null ? name : config.getDefaultName();
-//		String textReturn = String.format("%s, %s!!!", greetingReturn, nameReturn);
-//		
-//		return ResponseEntity.ok(textReturn);
-//	}
-
-	
-	
 }

@@ -4,20 +4,17 @@ import java.util.List;
 
 public class CurrencyBCResponse {
 	
-	private List<values> value;
-	
-	public List<values> getValue() {
+	private List<Values> value;
+
+	public List<Values> getValue() {
 		return value;
 	}
 
-
-	public void setValue(List<values> value) {
+	public void setValue(List<Values> value) {
 		this.value = value;
 	}
 
-
-
-	public static class values {
+	public static class Values{
 		private double cotacaoVenda;
 
 		public double getCotacaoVenda() {
@@ -28,6 +25,7 @@ public class CurrencyBCResponse {
 			this.cotacaoVenda = cotacaoVenda;
 		}
 		
-		
 	}
+	
+	
 }

@@ -1,6 +1,4 @@
-package br.edu.atitus.currency_service.clients;
-
-import java.util.List;
+package br.edu.atitus.currency_service.clients;import java.util.ArrayList;
 
 import org.springframework.stereotype.Component;
 
@@ -9,11 +7,9 @@ public class CurrencyBCFallback implements CurrencyBCClient{
 
 	@Override
 	public CurrencyBCResponse getCurrencyBC(String moeda) {
-	    CurrencyBCResponse currency = new CurrencyBCResponse();
-	    CurrencyBCResponse.values fallbackValue = new CurrencyBCResponse.values();
-	    fallbackValue.setCotacaoVenda(-1.0);
-	    currency.setValue(List.of(fallbackValue));
-	    return currency;
+		CurrencyBCResponse currency = new CurrencyBCResponse();
+		currency.setValue(new ArrayList());
+		return currency;
 	}
 
 }

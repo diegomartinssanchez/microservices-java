@@ -16,57 +16,56 @@ import br.edu.atitus.product_service.repositories.ProductRepository;
 @RestController
 @RequestMapping("products")
 public class OpenProductController {
-	
+
 	private final ProductRepository repository;
 	private final CurrencyClient currencyClient;
-	private final CacheManager cacheManager; 
+	private final CacheManager cacheManager;
 
-	public OpenProductController(ProductRepository repository, CurrencyClient currencyClient, CacheManager cacheManager) {
+	public OpenProductController(ProductRepository repository, CurrencyClient currencyClient,
+			CacheManager cacheManager) {
 		super();
 		this.repository = repository;
 		this.currencyClient = currencyClient;
-		this.cacheManager = cacheManager; 
+		this.cacheManager = cacheManager;
 	}
-	
+
 	@Value("${server.port}")
 	private int serverPort;
-	
+
 	@GetMapping("/{idProduct}/{targetCurrency}")
-	public ResponseEntity<ProductEntity> getProduct(
-			@PathVariable Long idProduct,
-			@PathVariable String targetCurrency
- 			) throws Exception {
-		
-		String cacheKey = idProduct + targetCurrency;
-		String cacheName = "productCache";
-		
-		ProductEntity product = cacheManager.getCache(cacheName).get(cacheKey, ProductEntity.class);
-		
-		if (product != null) {
-			product.setEnviroment("Product-service running on Port: " + serverPort + " - Source: Cache");
-			return ResponseEntity.ok(product);
+	public ResponseEntity<ProductEntity> getProduct(@PathVariable Long idProduct, @PathVariable String targetCurrency)
+			throws Exception {
+
+		targetCurrency = targetCurrency.toUpperCase();
+		String nameCache = "Product";
+		String keyCache = idProduct + targetCurrency;
+
+		ProductEntity product = cacheManager.getCache(nameCache).get(keyCache, ProductEntity.class);
+
+		if (product == null) {
+			product = repository.findById(idProduct).orElseThrow(() -> new Exception("Product not found"));
+
+			product.setEnviroment("Product-service running on Port: " + serverPort);
+
+			if (product.getCurrency().equals(targetCurrency)) {
+				product.setConvertedPrice(product.getPrice());
+			} else {
+				CurrencyResponse currency = currencyClient.getCurrency(product.getPrice(), product.getCurrency(),
+						targetCurrency);
+				if (currency != null) {
+					product.setConvertedPrice(currency.getConvertedValue());
+					product.setEnviroment(product.getEnviroment() + " - " + currency.getEnviroment());
+					
+					cacheManager.getCache(nameCache).put(keyCache, product);
+				} else {
+					product.setConvertedPrice(-1);
+					product.setEnviroment(product.getEnviroment() + " - Currency unavaible");
+				}
+			}
+		} else {
+			product.setEnviroment("Product-service running on Port: " + serverPort + " - DataSource: cache");
 		}
-		
-		product = repository.findById(idProduct)
-				.orElseThrow(() -> new Exception("Product not found"));
-		
-		product.setEnviroment("Product-service running on Port: " + serverPort);
-		
-		if (targetCurrency.equalsIgnoreCase(product.getCurrency()))
-			product.setConvertedPrice(product.getPrice());
-		else {
-			CurrencyResponse currency = currencyClient.getCurrency(
-					product.getPrice(), 
-					product.getCurrency(), 
-					targetCurrency);
-			
-			product.setConvertedPrice(currency.getConvertedValue());
-			product.setEnviroment(product.getEnviroment() +
-						" - " + currency.getEnviroment());
-		}
-		
-		cacheManager.getCache(cacheName).put(cacheKey, product);
-		
+
 		return ResponseEntity.ok(product);
 	}
 
